@@ -10,7 +10,8 @@
           <input class="nav" type="text" name="startAddress">
           Enter Your Destination:
           <input class="nav" type="text" name="endAddress">
-          <button class="nav" class="btn btn-primary"> Go To Map </button>
+          <button class="nav" class="btn btn-primary" (click)="navigation()"> Go To Map </button>
+        <a class="nav" [routerLink]="['navigation']">DETAILS</a>
 </nav>
     </header>
   </div>
