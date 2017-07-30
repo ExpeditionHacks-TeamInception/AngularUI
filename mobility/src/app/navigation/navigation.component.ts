@@ -12,7 +12,7 @@ export class NavigationComponent implements OnInit {
   }
 
   ngOnInit() {
-    const calculateRouteFromAtoB = function(platform) {
+     const calculateRouteFromAtoB = function (platform) {
       let router = platform.getRoutingService(),
         routeRequestParams = {
           mode: 'fastest;car',
@@ -20,7 +20,7 @@ export class NavigationComponent implements OnInit {
           routeattributes: 'waypoints,summary,shape,legs',
           maneuverattributes: 'direction,action',
           waypoint0: '52.5160,13.3779', // Brandenburg Gate
-          waypoint1: '52.5206,13.3862'  // Friedrichstraße Railway Station
+          waypoint1: '52.5206,13.3862'
         };
 
 
@@ -37,7 +37,7 @@ export class NavigationComponent implements OnInit {
      *
      * see: http://developer.here.com/rest-apis/documentation/routing/topics/resource-type-calculate-route.html
      */
-    const onSuccess = function(result) {
+    const onSuccess = function (result) {
       let route = result.response.route[0];
       /*
        * The styling of the route response on the map is entirely under the developer's control.
@@ -51,15 +51,15 @@ export class NavigationComponent implements OnInit {
       addManueversToPanel(route);
       addSummaryToPanel(route.summary);
       // ... etc.
-    }
+    };
 
     /**
      * This function will be called if a communication error occurs during the JSON-P request
      * @param  {Object} error  The error message received.
      */
-    const onError = function(error) {
+    const onError = function (error) {
       alert('Ooops!');
-    }
+    };
 
 
     /**
@@ -67,42 +67,41 @@ export class NavigationComponent implements OnInit {
      */
 
 // set up containers for the map  + panel
-    var mapContainer = document.getElementById('map');
-      // routeInstructionsContainer = document.getElementById('panel');
-
-//Step 1: initialize communication with the platform
-    var platform = new H.service.Platform({
+     let mapContainer = document.getElementById('map');
+//    routeInstructionsContainer = document.getElementById('panel');
+//
+// //Step 1: initialize communication with the platform
+    let platform = new H.service.Platform({
       app_id: 'DemoAppId01082013GAL',
       app_code: 'AJKnXv84fjrb0KIHawS0Tg',
       useCIT: true,
       useHTTPS: true
     });
-    var defaultLayers = platform.createDefaultLayers();
-
-//Step 2: initialize a map - this map is centered over Berlin
-    var map = new H.Map(mapContainer,
+     let defaultLayers = platform.createDefaultLayers();
+    //Step 2: initialize a map - this map is centered over Berlin
+    let map = new H.Map(mapContainer,
       defaultLayers.normal.map, {
-        center: {lat: 52.5160, lng: 13.3779},
-        zoom: 13
+        center: {lat: 53.430, lng: -2.961},
+        zoom: 7
       });
 
 //Step 3: make the map interactive
 // MapEvents enables the event system
 // Behavior implements default interactions for pan/zoom (also on mobile touch environments)
-    var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
-
-// Create the default UI components
-    var ui = H.ui.UI.createDefault(map, defaultLayers);
-
+     let behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+//
+// // Create the default UI components
+     let ui = H.ui.UI.createDefault(map, defaultLayers);
+//
 // Hold a reference to any infobubble opened
-    var bubble;
+    let bubble;
 
     /**
      * Opens/Closes a infobubble
      * @param  {H.geo.Point} position     The location on the map.
      * @param  {String} text              The contents of the infobubble.
      */
-    function openBubble(position, text) {
+    let openBubble = function (position, text) {
       if (!bubble) {
         bubble = new H.ui.InfoBubble(
           position,
@@ -122,12 +121,14 @@ export class NavigationComponent implements OnInit {
      * @param {Object} route A route as received from the H.service.RoutingService
      */
     function addRouteShapeToMap(route) {
-      var strip = new H.geo.Strip(),
-        routeShape = route.shape,
+       let strip = new H.geo.Strip(),
+      routeShape = route.shape,
+        // routeShape = getWayPoints(),
         polyline;
 
       routeShape.forEach(function (point) {
-        var parts = point.split(',');
+        debugger;
+        let parts = point.split(',');
         strip.pushLatLngAlt(parts[0], parts[1]);
       });
 
@@ -148,8 +149,8 @@ export class NavigationComponent implements OnInit {
      * Creates a series of H.map.Marker points from the route and adds them to the map.
      * @param {Object} route  A route as received from the H.service.RoutingService
      */
-    var addManueversToMap = function(route) {
-      var svgMarkup = '<svg width="18" height="18" ' +
+    let addManueversToMap = function (route) {
+      let svgMarkup = '<svg width="18" height="18" ' +
           'xmlns="http://www.w3.org/2000/svg">' +
           '<circle cx="8" cy="8" r="8" ' +
           'fill="#1b468d" stroke="white" stroke-width="1"  />' +
@@ -163,9 +164,9 @@ export class NavigationComponent implements OnInit {
       for (i = 0; i < route.leg.length; i += 1) {
         for (j = 0; j < route.leg[i].maneuver.length; j += 1) {
           // Get the next maneuver.
-         var  maneuver = route.leg[i].maneuver[j];
+          let maneuver = route.leg[i].maneuver[j];
           // Add a marker to the maneuvers group
-          var marker = new H.map.Marker({
+          let marker = new H.map.Marker({
               lat: maneuver.position.latitude,
               lng: maneuver.position.longitude
             },
@@ -190,10 +191,10 @@ export class NavigationComponent implements OnInit {
      * Creates a series of H.map.Marker points from the route and adds them to the map.
      * @param {Object} route  A route as received from the H.service.RoutingService
      */
-    function addWaypointsToPanel(waypoints) {
+    let addWaypointsToPanel = function(waypoints) {
 
 
-      var nodeH3 = document.createElement('h3'),
+      let nodeH3 = document.createElement('h3'),
         waypointLabels = [],
         i;
 
@@ -212,11 +213,11 @@ export class NavigationComponent implements OnInit {
      * Creates a series of H.map.Marker points from the route and adds them to the map.
      * @param {Object} route  A route as received from the H.service.RoutingService
      */
-    var addSummaryToPanel = function(summary) {
-      var summaryDiv = document.createElement('div'),
+    let addSummaryToPanel = function (summary) {
+      let summaryDiv = document.createElement('div'),
         content = '';
       content += '<b>Total distance</b>: ' + summary.distance + 'm. <br/>';
-      content += '<b>Travel Time</b>: ' + this.toMMSS(summary.travelTime) + ' (in current traffic)';
+      content += '<b>Travel Time</b>: ' + toMMSS(summary.travelTime) + ' (in current traffic)';
 
 
       summaryDiv.style.fontSize = 'small';
@@ -224,16 +225,16 @@ export class NavigationComponent implements OnInit {
       summaryDiv.style.marginRight = '5%';
       summaryDiv.innerHTML = content;
       // routeInstructionsContainer.appendChild(summaryDiv);
-    }
+    };
 
     /**
      * Creates a series of H.map.Marker points from the route and adds them to the map.
      * @param {Object} route  A route as received from the H.service.RoutingService
      */
-    var addManueversToPanel = function(route) {
+    let addManueversToPanel = function (route) {
 
 
-      var nodeOL = document.createElement('ol'),
+      let nodeOL = document.createElement('ol'),
         i,
         j;
 
@@ -246,9 +247,9 @@ export class NavigationComponent implements OnInit {
       for (i = 0; i < route.leg.length; i += 1) {
         for (j = 0; j < route.leg[i].maneuver.length; j += 1) {
           // Get the next maneuver.
-          var maneuver = route.leg[i].maneuver[j];
+          let maneuver = route.leg[i].maneuver[j];
 
-          var li = document.createElement('li'),
+          let li = document.createElement('li'),
             spanArrow = document.createElement('span'),
             spanInstruction = document.createElement('span');
 
@@ -260,20 +261,66 @@ export class NavigationComponent implements OnInit {
           nodeOL.appendChild(li);
         }
       }
-
       // routeInstructionsContainer.appendChild(nodeOL);
-    }
+    };
 
-
+    let toMMSS = function (number) {
+      return Math.floor(number / 60) + ' minutes ' + (number % 60) + ' seconds.';
+    };
 
 
 // Now use the map as required...
     calculateRouteFromAtoB(platform);
 
+    const getWayPoints = function() {
+      console.log("this is what?");
+    };
+
+    // INFO BUBBLE --------
+
+//     const addMarkerToGroup = function (group, coordinate, html) {
+//       let marker = new H.map.Marker(coordinate);
+//       // add custom data to the marker
+//       marker.setData(html);
+//       group.addObject(marker);
+//     };
+//
+//
+//     /**
+//      * Add two markers showing the position of Liverpool and Manchester City football clubs.
+//      * Clicking on a marker opens an infobubble which holds HTML content related to the marker.
+//      * @param  {H.Map} map      A HERE Map instance within the application
+//      */
+//     const addInfoBubble = function(map) {
+//       let group = new H.map.Group();
+//
+//       map.addObject(group);
+//
+//       // add 'tap' event listener, that opens info bubble, to the group
+//       group.addEventListener('tap', function (evt) {
+//         // event target is the marker itself, group is a parent event target
+//         // for all objects that it contains
+//         let bubble = new H.ui.InfoBubble(evt.target.getPosition(), {
+//           // read custom data
+//           content: evt.target.getData()
+//         });
+//         // show info bubble
+//         ui.addBubble(bubble);
+//       }, false);
+//
+//       addMarkerToGroup(group, {lat: 53.439, lng: -2.221},
+//         '<div><a href=\'http://www.mcfc.co.uk\' >Manchester City</a>' +
+//         '</div><div >City of Manchester Stadium<br>Capacity: 48,000</div>');
+//
+//       addMarkerToGroup(group, {lat: 53.430, lng: -2.961},
+//         '<div ><a href=\'http://www.liverpoolfc.tv\' >Liverpool</a>' +
+//         '</div><div >Anfield<br>Capacity: 45,362</div>');
+//
+//     };
+// // Now use the map as required...
+//     addInfoBubble(map);
+
   }
 
-  toMMSS(number) {
-  return Math.floor(number / 60) + ' minutes ' + (number % 60) + ' seconds.';
-}
 }
 

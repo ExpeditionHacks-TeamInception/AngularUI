@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 
-
 declare var H: any;
 
 @Component({
@@ -31,15 +30,14 @@ export class HomeComponent implements OnInit {
     let ui = H.ui.UI.createDefault(map, defaultLayers);
 
     if (navigator.geolocation) {
-      let locLan: any;
+      let lacLan: any;
       let locLon: any;
       navigator.geolocation.getCurrentPosition(function (location) {
-        locLan = location.coords.latitude;
+        lacLan = location.coords.latitude;
         locLon = location.coords.longitude;
-        map.setCenter({lat: locLan, lng: locLon});
+        map.setCenter({lat: lacLan, lng: locLon});
         map.setZoom(14);
       });
-      // debugger;
       // setTimeout(this.moveMapToLocation(this.map, locLan, locLon), 500000);
     }
 
