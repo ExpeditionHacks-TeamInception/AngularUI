@@ -24,7 +24,6 @@ export class NavigationComponent implements OnInit {
       lineCap: 'square',
       lineJoin: 'bevel'
     };
-
      const calculateRouteFromAtoB = function (platform) {
       let router = platform.getRoutingService(),
         routeRequestParams = {
@@ -297,55 +296,6 @@ export class NavigationComponent implements OnInit {
         map.addObject(circle);
       });
     });
-
-    // let data = [
-    //   {
-    //     "latitude": 31.1218965,
-    //     "longitude": -97.8494418,
-    //     "alert": "Raining here. Roads might be wet. Drive Carefully."
-    //   },
-    //   {
-    //     "latitude": 31.055603,
-    //     "longitude": -98.1780553,
-    //     "alert": "Raining here. Roads might be wet. Drive Carefully."
-    //   },
-    //   {
-    //     "latitude": 31.4672363,
-    //     "longitude": -98.5678446,
-    //     "alert": "Raining here. Roads might be wet. Drive Carefully."
-    //   },
-    //   {
-    //     "latitude": 32.4468541,
-    //     "longitude": -100.5034983,
-    //     "alert": "Raining here. Roads might be wet. Drive Carefully."
-    //   },
-    //   {
-    //     "latitude": 35.107348,
-    //     "longitude": -106.6196001,
-    //     "alert": "Raining here. Roads might be wet. Drive Carefully."
-    //   },
-    //   {
-    //     "latitude": 35.3123331,
-    //     "longitude": -106.5342629,
-    //     "alert": "Raining here. Roads might be wet. Drive Carefully."
-    //   },
-    //   {
-    //     "latitude": 36.7112339,
-    //     "longitude": -107.9847264,
-    //     "alert": "Raining here. Roads might be wet. Drive Carefully."
-    //   },
-    //   {
-    //     "latitude": 37.346735,
-    //     "longitude": -108.5943604,
-    //     "alert": "Raining here. Roads might be wet. Drive Carefully."
-    //   },
-    //   {
-    //     "latitude": 37.3486331,
-    //     "longitude": -108.5858935,
-    //     "alert": "Raining here. Roads might be wet. Drive Carefully."
-    //   }
-    // ];
-
 // Now use the map as required...
     calculateRouteFromAtoB(platform);
 
