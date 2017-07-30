@@ -4,11 +4,16 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Http, Response, RequestOptions, RequestOptionsArgs, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
+import { Subject } from "rxjs/Subject";
 
 @Injectable()
 export class ApiHelperService {
 
-  constructor(private http: Http) { }
+  selectedPoint$: Subject<any[]>;
+
+  constructor(private http: Http) { 
+    this.selectedPoint$ = new Subject();
+  }
   
   getLatLong(url: string, address: string): Observable<{"Latitude": number, "Longitude":number}>{
     let header = this.getHeaders();
@@ -26,5 +31,9 @@ export class ApiHelperService {
     headers.append('Content-Type', 'application/json');
     //headers.append('Access-Control-Allow-Origin', '*');
     return headers;
+  }
+
+  getSelectedPoints(){
+    return this.selectedPoint$;
   }
 }

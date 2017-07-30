@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ApiHelperService } from "../api-helper.service";
 declare var H: any;
 
 @Component({
@@ -8,7 +9,9 @@ declare var H: any;
 })
 export class NavigationComponent implements OnInit {
 
-  constructor() {
+  points: any[];
+
+  constructor(private apiHelperService: ApiHelperService) {
   }
 
   ngOnInit() {
@@ -30,6 +33,11 @@ export class NavigationComponent implements OnInit {
         onError
       );
     };
+
+    this.apiHelperService.getSelectedPoints().subscribe(item => {
+      debugger;
+      this.points = item;
+    });
 
     /**
      * This function will be called once the Routing REST API provides a response
@@ -267,9 +275,9 @@ export class NavigationComponent implements OnInit {
       // routeInstructionsContainer.appendChild(nodeOL);
     };
 
-    let toMMSS = function (number) {
-      return Math.floor(number / 60) + ' minutes ' + (number % 60) + ' seconds.';
-    };
+    // let toMMSS = function (number) {
+    //   return Math.floor(number / 60) + ' minutes ' + (number % 60) + ' seconds.';
+    // };
 
 
 // Now use the map as required...
