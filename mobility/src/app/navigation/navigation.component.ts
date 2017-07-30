@@ -9,12 +9,38 @@ declare var H: any;
 })
 export class NavigationComponent implements OnInit {
 
+  points: any[];
+
   constructor(private apiHelperService: ApiHelperService) {
   }
 
   baseUrl: string = "http://localhost:5056/weather/v1/getAllAlertsOnRoute";
 
   ngOnInit() {
+
+
+    // this.points = this.apiHelperService.getSelectedPoint();
+
+    // Now use the map as required...
+this.apiHelperService.getSelectedPoints()
+    .subscribe(item => {
+    calculateRouteFromAtoB(platform, item);
+    var points = { waypoint0:  item[0],
+                  waypoint1:  item[1]};
+
+
+      this.apiHelperService.getBadWeatherConditions(this.baseUrl, JSON.stringify(points)).subscribe(data => {
+        data.forEach(value => {
+          var circle = new H.map.Circle({lat: (value.latitude), lng: (value.longitude)}, 10, { style: customStyle });
+          map.addEventListener('tap', function(evt) {
+            openBubble(
+              {lat: (value.latitude), lng: (value.longitude)} , value.alert);
+          }, false);
+
+          map.addObject(circle);
+        });
+      });
+    });
 
 
     var customStyle = {
@@ -24,24 +50,35 @@ export class NavigationComponent implements OnInit {
       lineCap: 'square',
       lineJoin: 'bevel'
     };
-     const calculateRouteFromAtoB = function (platform) {
+
+
+
+     const calculateRouteFromAtoB = function (platform, item) {
       let router = platform.getRoutingService(),
         routeRequestParams = {
           mode: 'fastest;car',
           representation: 'display',
           routeattributes: 'waypoints,summary,shape,legs',
           maneuverattributes: 'direction,action',
-          waypoint0: "30.2672,-97.7431",
-          waypoint1: "37.3489,-108.5859"
+          waypoint0:  item[0],
+          waypoint1:  item[1]
+          // waypoint0: '52.5160,13.3779', // Brandenburg Gate
+          // waypoint1: '52.5206,13.3862'
         };
 
-
-      router.calculateRoute(
+        router.calculateRoute(
         routeRequestParams,
         onSuccess,
         onError
       );
+
+
     };
+
+    // this.apiHelperService.getSelectedPoints().subscribe(item => {
+    //   debugger;
+    //   this.points = item;
+    // });
 
     /**
      * This function will be called once the Routing REST API provides a response
@@ -50,6 +87,7 @@ export class NavigationComponent implements OnInit {
      * see: http://developer.here.com/rest-apis/documentation/routing/topics/resource-type-calculate-route.html
      */
     const onSuccess = function (result) {
+      debugger;
       let route = result.response.route[0];
       /*
        * The styling of the route response on the map is entirely under the developer's control.
@@ -84,8 +122,8 @@ export class NavigationComponent implements OnInit {
 //
 // //Step 1: initialize communication with the platform
     let platform = new H.service.Platform({
-      app_id: 'DemoAppId01082013GAL',
-      app_code: 'AJKnXv84fjrb0KIHawS0Tg',
+      app_id: '8zbmKsTdRGcXP9qI8pI5',
+      app_code: 'wgchKRAQBczyCzYKVW1YdQ',
       useCIT: true,
       useHTTPS: true
     });
@@ -93,8 +131,8 @@ export class NavigationComponent implements OnInit {
     //Step 2: initialize a map - this map is centered over Berlin
     var map = new H.Map(mapContainer,
       defaultLayers.normal.map, {
-        center: {lat: 53.430, lng: -2.961},
-        zoom: 16
+        center: {lat: 30.2672, lng: -97.7431},
+        zoom: 7
       });
 
 //Step 3: make the map interactive
@@ -132,6 +170,7 @@ export class NavigationComponent implements OnInit {
      * Creates a H.map.Polyline from the shape of the route and adds it to the map.
      * @param {Object} route A route as received from the H.service.RoutingService
      */
+
     let addRouteShapeToMap = function(route) {
        let strip = new H.geo.Strip(),
       routeShape = route.shape,
@@ -279,33 +318,17 @@ export class NavigationComponent implements OnInit {
       return Math.floor(number / 60) + ' minutes ' + (number % 60) + ' seconds.';
     };
 
-   let point =  {
-      "waypoint0" : '30.2672,-97.7431',
-      "waypoint1" : '37.3489,-108.5859'
-    };
 
-    this.apiHelperService.getBadWeatherConditions(this.baseUrl, JSON.stringify(point)).subscribe(data => {
-      data.forEach(value => {
-        var circle = new H.map.Circle({lat: (value.latitude), lng: (value.longitude)}, 10, { style: customStyle });
 
-        map.addEventListener('tap', function(evt) {
-          openBubble(
-            {lat: (value.latitude), lng: (value.longitude)} , value.alert);
-        }, false);
-
-        map.addObject(circle);
-      });
-    });
 // Now use the map as required...
-    calculateRouteFromAtoB(platform);
 
     const getWayPoints = function() {
       console.log("this is what?");
     };
 
 
-
   }
+
 
 }
 
