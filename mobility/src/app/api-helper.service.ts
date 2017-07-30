@@ -35,6 +35,7 @@ export class ApiHelperService {
   }
 
   getBadWeatherConditions(url: string, data: any): any {
+    debugger;
     let header = this.getHeaders();
     let options = new RequestOptions({headers: header});
 

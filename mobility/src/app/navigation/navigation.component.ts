@@ -21,32 +21,31 @@ export class NavigationComponent implements OnInit {
   baseUrl: string = "http://localhost:5056/weather/v1/getAllAlertsOnRoute";
 
   ngOnInit() {
-  let route$ = new Subject<any>();
+    let route$ = new Subject<any>();
 
     var route1: any;
     // this.points = this.apiHelperService.getSelectedPoint();
 
     // Now use the map as required...
     this.apiHelperService.getSelectedPoints()
-    .subscribe(item => {
-    calculateRouteFromAtoB(platform, item);
+      .subscribe(item => {
+        calculateRouteFromAtoB(platform, item);
 
-      route$.subscribe(route => {
-      this.apiHelperService.getBadWeatherConditions(this.baseUrl, route).subscribe(data => {
-        data.forEach(value => {
-          var circle = new H.map.Circle({lat: (value.latitude), lng: (value.longitude)}, 10, { style: customStyle });
-          map.addEventListener('tap', function(evt) {
-            openBubble(
-              {lat: (value.latitude), lng: (value.longitude)} , value.alert);
-          }, false);
+        route$.subscribe(route => {
+          this.apiHelperService.getBadWeatherConditions(this.baseUrl, route).subscribe(data => {
+            data.forEach(value => {
+              var circle = new H.map.Circle({lat: (value.latitude), lng: (value.longitude)}, 10, {style: customStyle});
+              addCustomBubblerToMap(value.latitude, value.longitude, value.alert);
+              // map.addEventListener('tap', function (evt) {
+              //   openBubble(
+              //     {lat: (value.latitude), lng: (value.longitude)}, value.alert);
+              // }, false);
 
-          map.addObject(circle);
+              map.addObject(circle);
+            });
+          });
         });
       });
-    });
-    });
-
-
     var customStyle = {
       strokeColor: 'red',
       fillColor: 'rgba(255, 255, 255, 0.5',
@@ -56,21 +55,20 @@ export class NavigationComponent implements OnInit {
     };
 
 
-
-     const calculateRouteFromAtoB = function (platform, item) {
+    const calculateRouteFromAtoB = function (platform, item) {
       let router = platform.getRoutingService(),
         routeRequestParams = {
           mode: 'fastest;car',
           representation: 'display',
           routeattributes: 'waypoints,summary,shape,legs',
           maneuverattributes: 'direction,action',
-          waypoint0:  item[0],
-          waypoint1:  item[1]
+          waypoint0: item[0],
+          waypoint1: item[1]
           // waypoint0: '52.5160,13.3779', // Brandenburg Gate
           // waypoint1: '52.5206,13.3862'
         };
 
-        router.calculateRoute(
+      router.calculateRoute(
         routeRequestParams,
         onSuccess,
         onError
@@ -122,7 +120,7 @@ export class NavigationComponent implements OnInit {
      */
 
 // set up containers for the map  + panel
-     let mapContainer = document.getElementById('map');
+    let mapContainer = document.getElementById('map');
 //    routeInstructionsContainer = document.getElementById('panel');
 //
 // //Step 1: initialize communication with the platform
@@ -132,7 +130,7 @@ export class NavigationComponent implements OnInit {
       useCIT: true,
       useHTTPS: true
     });
-     let defaultLayers = platform.createDefaultLayers();
+    let defaultLayers = platform.createDefaultLayers();
     //Step 2: initialize a map - this map is centered over Berlin
     var map = new H.Map(mapContainer,
       defaultLayers.normal.map, {
@@ -143,10 +141,10 @@ export class NavigationComponent implements OnInit {
 //Step 3: make the map interactive
 // MapEvents enables the event system
 // Behavior implements default interactions for pan/zoom (also on mobile touch environments)
-     let behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+    let behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
 //
 // // Create the default UI components
-     let ui = H.ui.UI.createDefault(map, defaultLayers);
+    let ui = H.ui.UI.createDefault(map, defaultLayers);
 //
 // Hold a reference to any infobubble opened
     let bubble;
@@ -176,9 +174,9 @@ export class NavigationComponent implements OnInit {
      * @param {Object} route A route as received from the H.service.RoutingService
      */
 
-    let addRouteShapeToMap = function(route) {
-       let strip = new H.geo.Strip(),
-      routeShape = route.shape,
+    let addRouteShapeToMap = function (route) {
+      let strip = new H.geo.Strip(),
+        routeShape = route.shape,
         // routeShape = getWayPoints(),
         polyline;
 
@@ -246,8 +244,7 @@ export class NavigationComponent implements OnInit {
      * Creates a series of H.map.Marker points from the route and adds them to the map.
      * @param {Object} route  A route as received from the H.service.RoutingService
      */
-    let addWaypointsToPanel = function(waypoints) {
-
+    let addWaypointsToPanel = function (waypoints) {
 
 
       let nodeH3 = document.createElement('h3'),
@@ -324,14 +321,40 @@ export class NavigationComponent implements OnInit {
     };
 
 
-
 // Now use the map as required...
 
-    const getWayPoints = function() {
+    const getWayPoints = function () {
       console.log("this is what?");
     };
 
 
+    let addCustomBubblerToMap = function (lat, lon, alert) {
+      let svgMarkup = '<svg width="18" height="18" ' +
+          'xmlns="http://www.w3.org/2000/svg">' +
+          '<circle cx="8" cy="8" r="8" ' +
+          'fill="#FF0000" stroke="white" stroke-width="1"  />' +
+          '</svg>',
+        dotIcon = new H.map.Icon(svgMarkup, {anchor: {x: 8, y: 8}}),
+        group = new H.map.Group()
+
+      // Get the next maneuver.
+      let marker = new H.map.Marker({
+          lat: lat,
+          lng: lon
+        },
+        {icon: dotIcon});
+      marker.instruction = alert;
+      group.addObject(marker);
+
+      group.addEventListener('tap', function (evt) {
+        map.setCenter(evt.target.getPosition());
+        openBubble(
+          {lat: lat, lng: lon}, alert);
+      }, false);
+
+      // Add the maneuvers group to the map
+      map.addObject(group);
+    };
   }
 
 
