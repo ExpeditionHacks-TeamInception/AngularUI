@@ -43,8 +43,7 @@ export class NavComponent implements OnInit {
       this.endLat = end.Latitude;
       this.endLong = end.Longitude;
 
-      var points = [{'Latitude': this.startLat+"", 'Longitude': this.endLat+""},
-                    {'Latitude': this.endLat+"", 'Longitude': this.endLong+""}];
+      var points = [this.startLat +','+ this.startLong , this.endLat +','+ this.endLong];
       this.apiHelperService.getSelectedPoints().next(points);
       this.apiHelperService.setSelectedPoint(points);
       console.log("Comming from end address");

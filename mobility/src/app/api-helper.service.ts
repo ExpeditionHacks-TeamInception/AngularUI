@@ -2,22 +2,22 @@ import { Injectable } from '@angular/core';
 //import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Http, Response, RequestOptions, RequestOptionsArgs, Headers } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
-import { Subject } from "rxjs/Subject";
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable } from 'rxjs';
+import { Subject } from 'rxjs/Subject';
 
 @Injectable()
 export class ApiHelperService {
 
   mySelectedPoint;
-  selectedPoint$: BehaviorSubject<any[]>;
+  private selectedPoint$ = new Subject<any>();
 
-  constructor(private http: Http) { 
+
+  constructor(private http: Http) {
     this.mySelectedPoint = [];
   }
-  
-  setSelectedPoint(point: any){
+
+  setSelectedPoint(point: any) {
     this.mySelectedPoint = point;
   }
 
@@ -43,7 +43,8 @@ export class ApiHelperService {
     return headers;
   }
 
-  getSelectedPoints(){
+  getSelectedPoints() {
+    debugger;
     return this.selectedPoint$;
   }
 }

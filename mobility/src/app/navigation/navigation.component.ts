@@ -24,7 +24,7 @@ this.apiHelperService.getSelectedPoints()
       debugger;
     calculateRouteFromAtoB(platform, item);
     });
-    
+
 
     var customStyle = {
       strokeColor: 'red',
@@ -34,9 +34,8 @@ this.apiHelperService.getSelectedPoints()
       lineJoin: 'bevel'
     };
 
-   
-     const calculateRouteFromAtoB = function (platform, item) {
 
+     const calculateRouteFromAtoB = function (platform, item) {
        debugger;
       let router = platform.getRoutingService(),
         routeRequestParams = {
@@ -44,10 +43,10 @@ this.apiHelperService.getSelectedPoints()
           representation: 'display',
           routeattributes: 'waypoints,summary,shape,legs',
           maneuverattributes: 'direction,action',
-          waypoint0: '\'' + item[0].latitude + ',' + item[0].longitude + '\'',
-          waypoint1: '\'' + item[1].latitude + ',' + item[1].longitude + '\'',
-          //waypoint0: '52.5160,13.3779', // Brandenburg Gate
-          //waypoint1: '52.5206,13.3862'
+          waypoint0:  item[0],
+          waypoint1:  item[1]
+          // waypoint0: '52.5160,13.3779', // Brandenburg Gate
+          // waypoint1: '52.5206,13.3862'
         };
 
         router.calculateRoute(
@@ -56,7 +55,7 @@ this.apiHelperService.getSelectedPoints()
         onError
       );
 
-      
+
     };
 
     // this.apiHelperService.getSelectedPoints().subscribe(item => {
@@ -71,6 +70,7 @@ this.apiHelperService.getSelectedPoints()
      * see: http://developer.here.com/rest-apis/documentation/routing/topics/resource-type-calculate-route.html
      */
     const onSuccess = function (result) {
+      debugger;
       let route = result.response.route[0];
       /*
        * The styling of the route response on the map is entirely under the developer's control.
@@ -105,8 +105,8 @@ this.apiHelperService.getSelectedPoints()
 //
 // //Step 1: initialize communication with the platform
     let platform = new H.service.Platform({
-      app_id: 'DemoAppId01082013GAL',
-      app_code: 'AJKnXv84fjrb0KIHawS0Tg',
+      app_id: '8zbmKsTdRGcXP9qI8pI5',
+      app_code: 'wgchKRAQBczyCzYKVW1YdQ',
       useCIT: true,
       useHTTPS: true
     });
@@ -346,9 +346,9 @@ this.apiHelperService.getSelectedPoints()
 //     map.addObject(circle);
     // let mapEvents = new H.mapevents.MapEvents(map1);
 
-    
+
   }
-  
+
 
 }
 
