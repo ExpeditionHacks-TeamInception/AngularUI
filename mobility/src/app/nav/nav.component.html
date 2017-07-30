@@ -4,14 +4,18 @@
     <!-- the map -->
 
     <header>
+      <div class="logo">
+        <a href="#"><img src="../../assets/images/demo/SafeTRIP_logo.png" alt=""></a>
+
+      </div>
 
       <nav class="nav">
-          Start:
+          Where are you starting from?
           <input class="nav" type="text" [(ngModel)]="startAddress" name="start">
-          Enter Your Destination:
+          Where do you want to go?
           <input class="nav" type="text" [(ngModel)]="endAddress" name="end">
           <button class="nav" class="btn btn-primary" (click)="navigation()"> Go To Map </button>
-</nav>
+      </nav>
     </header>
   </div>
 <!--</div>-->
