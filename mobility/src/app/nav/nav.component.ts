@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Http, Response, RequestOptions, RequestOptionsArgs, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
+import { ApiHelperService } from "../api-helper.service";
 
 @Component({
   selector: 'app-nav',
@@ -20,7 +21,7 @@ export class NavComponent implements OnInit {
   endLong: number;
 
 
-  constructor(private router: Router, private http: Http) {
+  constructor(private router: Router, private http: Http, private apiHelperService: ApiHelperService) {
 
   }
 
@@ -31,33 +32,37 @@ export class NavComponent implements OnInit {
     this.router.navigate(['navigation']);
     console.log("This is the result of the API call");
 
-    this.getLatLong(this.startAddress).subscribe(start => {
+    this.apiHelperService.getLatLong(this.baseUrl, this.startAddress).subscribe(start => {
       this.startLat = start.Latitude;
       this.startLong = start.Longitude;
+      console.log("Comming from start address");
       console.log(this.startLat, this.startLong);
     });
-    this.getLatLong(this.endAddress).subscribe(end => {
+    this.apiHelperService.getLatLong(this.baseUrl, this.endAddress).subscribe(end => {
       this.endLat = end.Latitude;
-      this.endLong = end.Longitude});
+      this.endLong = end.Longitude;
+      console.log("Comming from end address");
       console.log(this.endLat, this.endLong);
+    });
+      
 
   }
 
-  getLatLong(address: string): Observable<{"Latitude": number, "Longitude":number}>{
-    let header = this.getHeaders();
-    let options = new RequestOptions({headers: header});
-    let logLat = this.http
-      .get(`${this.baseUrl}` + address)
-      .map(item => item.json());
-      return logLat;
-  }
+  // getLatLong(address: string): Observable<{"Latitude": number, "Longitude":number}>{
+    // let header = this.getHeaders();
+    // let options = new RequestOptions({headers: header});
+    // let logLat = this.http
+    //   .get(`${this.baseUrl}` + address)
+    //   .map(item => item.json());
+    //   return logLat;
+  // }
 
   getHeaders(){
     // I included these headers because otherwise FireFox
     // will request text/html instead of application/json
-    let headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Access-Control-Allow-Origin', '*');
-    return headers;
+    // let headers = new Headers();
+    // headers.append('Content-Type', 'application/json');
+    // headers.append('Access-Control-Allow-Origin', '*');
+    // return headers;
   }
 }

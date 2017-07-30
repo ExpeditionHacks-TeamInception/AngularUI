@@ -9,6 +9,7 @@ import { FooterComponent } from './footer/footer.component';
 import { RouterModule, Routes } from '@angular/router';
 import { NavigationComponent } from './navigation/navigation.component';
 import { HomeComponent } from './home/home.component';
+import { ApiHelperService } from "./api-helper.service";
 
 
 const appRoutes: Routes = [
@@ -33,7 +34,7 @@ const appRoutes: Routes = [
       { enableTracing: true } // <-- debugging purposes only
     ),
   ],
-  providers: [],
+  providers: [ApiHelperService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
