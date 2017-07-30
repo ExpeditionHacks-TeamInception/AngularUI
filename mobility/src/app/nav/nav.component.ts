@@ -27,7 +27,7 @@ export class NavComponent implements OnInit {
 
   ngOnInit() {
   }
-  
+
   navigation() {
     this.router.navigate(['navigation']);
     console.log("This is the result of the API call");
@@ -49,25 +49,6 @@ export class NavComponent implements OnInit {
       console.log("Comming from end address");
       console.log(this.endLat, this.endLong);
     });
-      
 
-  }
-
-  // getLatLong(address: string): Observable<{"Latitude": number, "Longitude":number}>{
-    // let header = this.getHeaders();
-    // let options = new RequestOptions({headers: header});
-    // let logLat = this.http
-    //   .get(`${this.baseUrl}` + address)
-    //   .map(item => item.json());
-    //   return logLat;
-  // }
-
-  getHeaders(){
-    // I included these headers because otherwise FireFox
-    // will request text/html instead of application/json
-    // let headers = new Headers();
-    // headers.append('Content-Type', 'application/json');
-    // headers.append('Access-Control-Allow-Origin', '*');
-    // return headers;
   }
 }

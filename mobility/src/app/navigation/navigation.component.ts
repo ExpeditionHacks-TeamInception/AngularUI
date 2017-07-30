@@ -15,6 +15,15 @@ export class NavigationComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    var customStyle = {
+      strokeColor: 'red',
+      fillColor: 'rgba(255, 255, 255, 0.5',
+      lineWidth: 10,
+      lineCap: 'square',
+      lineJoin: 'bevel'
+    };
+
      const calculateRouteFromAtoB = function (platform) {
       let router = platform.getRoutingService(),
         routeRequestParams = {
@@ -87,7 +96,7 @@ export class NavigationComponent implements OnInit {
     });
      let defaultLayers = platform.createDefaultLayers();
     //Step 2: initialize a map - this map is centered over Berlin
-    let map = new H.Map(mapContainer,
+    var map = new H.Map(mapContainer,
       defaultLayers.normal.map, {
         center: {lat: 53.430, lng: -2.961},
         zoom: 7
@@ -121,7 +130,7 @@ export class NavigationComponent implements OnInit {
         bubble.setContent(text);
         bubble.open();
       }
-    }
+    };
 
 
     /**
@@ -135,21 +144,22 @@ export class NavigationComponent implements OnInit {
         polyline;
 
       routeShape.forEach(function (point) {
-        debugger;
         let parts = point.split(',');
         strip.pushLatLngAlt(parts[0], parts[1]);
       });
-
       polyline = new H.map.Polyline(strip, {
         style: {
           lineWidth: 4,
           strokeColor: 'rgba(0, 128, 255, 0.7)'
         }
       });
+
+
       // Add the polyline to the map
       map.addObject(polyline);
-      // And zoom to its bounding rectangle
       map.setViewBounds(polyline.getBounds(), true);
+
+
     }
 
 
@@ -217,9 +227,6 @@ export class NavigationComponent implements OnInit {
       // routeInstructionsContainer.innerHTML = '';
       // routeInstructionsContainer.appendChild(nodeH3);
     }
-    var toMMSS = function(number: number) {
-      return Math.floor(number / 60) + ' minutes ' + (number % 60) + ' seconds.';
-    }
     /**
      * Creates a series of H.map.Marker points from the route and adds them to the map.
      * @param {Object} route  A route as received from the H.service.RoutingService
@@ -279,6 +286,18 @@ export class NavigationComponent implements OnInit {
     //   return Math.floor(number / 60) + ' minutes ' + (number % 60) + ' seconds.';
     // };
 
+    let data = [
+      {
+      "lat":"52.5160",
+      "lon":"13.3779",
+      "inst":"inst"
+    },
+    {
+      "lat":"52.51",
+      "lon":"13.4",
+      "inst":"instr"
+    }
+  ];
 
 // Now use the map as required...
     calculateRouteFromAtoB(platform);
@@ -287,49 +306,31 @@ export class NavigationComponent implements OnInit {
       console.log("this is what?");
     };
 
-    // INFO BUBBLE --------
+    data.forEach(value => {
+      var circle = new H.map.Circle({lat: parseFloat(value.lat), lng: parseFloat(value.lon)}, 10, { style: customStyle });
 
-//     const addMarkerToGroup = function (group, coordinate, html) {
-//       let marker = new H.map.Marker(coordinate);
-//       // add custom data to the marker
-//       marker.setData(html);
-//       group.addObject(marker);
-//     };
-//
-//
-//     /**
-//      * Add two markers showing the position of Liverpool and Manchester City football clubs.
-//      * Clicking on a marker opens an infobubble which holds HTML content related to the marker.
-//      * @param  {H.Map} map      A HERE Map instance within the application
-//      */
-//     const addInfoBubble = function(map) {
-//       let group = new H.map.Group();
-//
-//       map.addObject(group);
-//
-//       // add 'tap' event listener, that opens info bubble, to the group
-//       group.addEventListener('tap', function (evt) {
-//         // event target is the marker itself, group is a parent event target
-//         // for all objects that it contains
-//         let bubble = new H.ui.InfoBubble(evt.target.getPosition(), {
-//           // read custom data
-//           content: evt.target.getData()
-//         });
-//         // show info bubble
-//         ui.addBubble(bubble);
-//       }, false);
-//
-//       addMarkerToGroup(group, {lat: 53.439, lng: -2.221},
-//         '<div><a href=\'http://www.mcfc.co.uk\' >Manchester City</a>' +
-//         '</div><div >City of Manchester Stadium<br>Capacity: 48,000</div>');
-//
-//       addMarkerToGroup(group, {lat: 53.430, lng: -2.961},
-//         '<div ><a href=\'http://www.liverpoolfc.tv\' >Liverpool</a>' +
-//         '</div><div >Anfield<br>Capacity: 45,362</div>');
-//
-//     };
-// // Now use the map as required...
-//     addInfoBubble(map);
+      map.addEventListener('drag', function(evt) {
+        openBubble(
+          {lat: parseFloat(value.lat), lng: parseFloat(value.lon)} , value.inst);
+      }, false);
+
+      map.addObject(circle);
+    });
+
+    // var circle = new H.map.Circle({lat: 52.51, lng: 13.4}, 50, { style: customStyle });
+    //
+    // map.addEventListener('drag', function(evt) {
+    //   openBubble(
+    //     {lat: 52.51, lng: 13.4} , "Instructions");
+    // }, false);
+
+    // Log 'tap' and 'mouse' events:
+    // console.log("logged "+evt.type, evt.currentPointer.type);
+
+// Add the circle to the map:
+//     map.addObject(circle);
+    // let mapEvents = new H.mapevents.MapEvents(map1);
+
 
   }
 
