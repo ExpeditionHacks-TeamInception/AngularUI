@@ -5,17 +5,27 @@ import { Http, Response, RequestOptions, RequestOptionsArgs, Headers } from '@an
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import { Subject } from "rxjs/Subject";
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Injectable()
 export class ApiHelperService {
 
-  selectedPoint$: Subject<any[]>;
+  mySelectedPoint;
+  selectedPoint$: BehaviorSubject<any[]>;
 
   constructor(private http: Http) { 
-    this.selectedPoint$ = new Subject();
+    this.mySelectedPoint = [];
   }
   
-  getLatLong(url: string, address: string): Observable<{"Latitude": number, "Longitude":number}>{
+  setSelectedPoint(point: any){
+    this.mySelectedPoint = point;
+  }
+
+  getSelectedPoint(){
+    return this.mySelectedPoint;
+  }
+
+  getLatLong(url: string, address: string): any{
     let header = this.getHeaders();
     let options = new RequestOptions({headers: header});
     let logLat = this.http

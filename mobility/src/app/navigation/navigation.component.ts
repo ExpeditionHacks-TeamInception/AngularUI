@@ -16,6 +16,16 @@ export class NavigationComponent implements OnInit {
 
   ngOnInit() {
 
+    // this.points = this.apiHelperService.getSelectedPoint();
+
+    // Now use the map as required...
+this.apiHelperService.getSelectedPoints()
+    .subscribe(item => {
+      debugger;
+    calculateRouteFromAtoB(platform, item);
+    });
+    
+
     var customStyle = {
       strokeColor: 'red',
       fillColor: 'rgba(255, 255, 255, 0.5',
@@ -24,29 +34,35 @@ export class NavigationComponent implements OnInit {
       lineJoin: 'bevel'
     };
 
-     const calculateRouteFromAtoB = function (platform) {
+   
+     const calculateRouteFromAtoB = function (platform, item) {
+
+       debugger;
       let router = platform.getRoutingService(),
         routeRequestParams = {
           mode: 'fastest;car',
           representation: 'display',
           routeattributes: 'waypoints,summary,shape,legs',
           maneuverattributes: 'direction,action',
-          waypoint0: '52.5160,13.3779', // Brandenburg Gate
-          waypoint1: '52.5206,13.3862'
+          waypoint0: '\'' + item[0].latitude + ',' + item[0].longitude + '\'',
+          waypoint1: '\'' + item[1].latitude + ',' + item[1].longitude + '\'',
+          //waypoint0: '52.5160,13.3779', // Brandenburg Gate
+          //waypoint1: '52.5206,13.3862'
         };
 
-
-      router.calculateRoute(
+        router.calculateRoute(
         routeRequestParams,
         onSuccess,
         onError
       );
+
+      
     };
 
-    this.apiHelperService.getSelectedPoints().subscribe(item => {
-      debugger;
-      this.points = item;
-    });
+    // this.apiHelperService.getSelectedPoints().subscribe(item => {
+    //   debugger;
+    //   this.points = item;
+    // });
 
     /**
      * This function will be called once the Routing REST API provides a response
@@ -137,7 +153,7 @@ export class NavigationComponent implements OnInit {
      * Creates a H.map.Polyline from the shape of the route and adds it to the map.
      * @param {Object} route A route as received from the H.service.RoutingService
      */
-    function addRouteShapeToMap(route) {
+    var addRouteShapeToMap = function(route) {
        let strip = new H.geo.Strip(),
       routeShape = route.shape,
         // routeShape = getWayPoints(),
@@ -282,9 +298,9 @@ export class NavigationComponent implements OnInit {
       // routeInstructionsContainer.appendChild(nodeOL);
     };
 
-    // let toMMSS = function (number) {
-    //   return Math.floor(number / 60) + ' minutes ' + (number % 60) + ' seconds.';
-    // };
+    let toMMSS = function (number) {
+      return Math.floor(number / 60) + ' minutes ' + (number % 60) + ' seconds.';
+    };
 
     let data = [
       {
@@ -299,8 +315,7 @@ export class NavigationComponent implements OnInit {
     }
   ];
 
-// Now use the map as required...
-    calculateRouteFromAtoB(platform);
+
 
     const getWayPoints = function() {
       console.log("this is what?");
@@ -331,8 +346,9 @@ export class NavigationComponent implements OnInit {
 //     map.addObject(circle);
     // let mapEvents = new H.mapevents.MapEvents(map1);
 
-
+    
   }
+  
 
 }
 
