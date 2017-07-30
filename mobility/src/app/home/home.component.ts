@@ -17,6 +17,13 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
 
+    var customStyle = {
+      strokeColor: 'blue',
+      fillColor: 'rgba(255, 255, 255, 0.5',
+      lineWidth: 10,
+      lineCap: 'square',
+      lineJoin: 'bevel'
+    };
     this.platform = new H.service.Platform({
       app_id: 'DemoAppId01082013GAL',
       app_code: 'AJKnXv84fjrb0KIHawS0Tg',
@@ -35,6 +42,8 @@ export class HomeComponent implements OnInit {
       navigator.geolocation.getCurrentPosition(function (location) {
         lacLan = location.coords.latitude;
         locLon = location.coords.longitude;
+        var circle = new H.map.Circle({lat: lacLan, lng: locLon}, 10, { style: customStyle });
+        map.addObject(circle);
         map.setCenter({lat: lacLan, lng: locLon});
         map.setZoom(14);
       });

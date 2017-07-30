@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ApiHelperService } from "../api-helper.service";
 declare var H: any;
 
 @Component({
@@ -8,10 +9,13 @@ declare var H: any;
 })
 export class NavigationComponent implements OnInit {
 
-  constructor() {
+  constructor(private apiHelperService: ApiHelperService) {
   }
 
+  baseUrl: string = "http://localhost:5056/weather/v1/getAllAlertsOnRoute";
+
   ngOnInit() {
+
 
     var customStyle = {
       strokeColor: 'red',
@@ -28,8 +32,8 @@ export class NavigationComponent implements OnInit {
           representation: 'display',
           routeattributes: 'waypoints,summary,shape,legs',
           maneuverattributes: 'direction,action',
-          waypoint0: '52.5160,13.3779', // Brandenburg Gate
-          waypoint1: '52.5206,13.3862'
+          waypoint0: "30.2672,-97.7431",
+          waypoint1: "37.3489,-108.5859"
         };
 
 
@@ -54,7 +58,7 @@ export class NavigationComponent implements OnInit {
        * in the functions below:
        */
       addRouteShapeToMap(route);
-      addManueversToMap(route);
+      // addManueversToMap(route);
 
       addWaypointsToPanel(route.waypoint);
       addManueversToPanel(route);
@@ -91,7 +95,7 @@ export class NavigationComponent implements OnInit {
     var map = new H.Map(mapContainer,
       defaultLayers.normal.map, {
         center: {lat: 53.430, lng: -2.961},
-        zoom: 7
+        zoom: 16
       });
 
 //Step 3: make the map interactive
@@ -129,7 +133,7 @@ export class NavigationComponent implements OnInit {
      * Creates a H.map.Polyline from the shape of the route and adds it to the map.
      * @param {Object} route A route as received from the H.service.RoutingService
      */
-    function addRouteShapeToMap(route) {
+    let addRouteShapeToMap = function(route) {
        let strip = new H.geo.Strip(),
       routeShape = route.shape,
         // routeShape = getWayPoints(),
@@ -150,8 +154,6 @@ export class NavigationComponent implements OnInit {
       // Add the polyline to the map
       map.addObject(polyline);
       map.setViewBounds(polyline.getBounds(), true);
-
-
     }
 
 
@@ -278,18 +280,71 @@ export class NavigationComponent implements OnInit {
       return Math.floor(number / 60) + ' minutes ' + (number % 60) + ' seconds.';
     };
 
-    let data = [
-      {
-      "lat":"52.5160",
-      "lon":"13.3779",
-      "inst":"inst"
-    },
-    {
-      "lat":"52.51",
-      "lon":"13.4",
-      "inst":"instr"
-    }
-  ];
+   let point =  {
+      "waypoint0" : '30.2672,-97.7431',
+      "waypoint1" : '37.3489,-108.5859'
+    };
+
+    this.apiHelperService.getBadWeatherConditions(this.baseUrl, JSON.stringify(point)).subscribe(data => {
+      data.forEach(value => {
+        var circle = new H.map.Circle({lat: (value.latitude), lng: (value.longitude)}, 10, { style: customStyle });
+
+        map.addEventListener('tap', function(evt) {
+          openBubble(
+            {lat: (value.latitude), lng: (value.longitude)} , value.alert);
+        }, false);
+
+        map.addObject(circle);
+      });
+    });
+
+    // let data = [
+    //   {
+    //     "latitude": 31.1218965,
+    //     "longitude": -97.8494418,
+    //     "alert": "Raining here. Roads might be wet. Drive Carefully."
+    //   },
+    //   {
+    //     "latitude": 31.055603,
+    //     "longitude": -98.1780553,
+    //     "alert": "Raining here. Roads might be wet. Drive Carefully."
+    //   },
+    //   {
+    //     "latitude": 31.4672363,
+    //     "longitude": -98.5678446,
+    //     "alert": "Raining here. Roads might be wet. Drive Carefully."
+    //   },
+    //   {
+    //     "latitude": 32.4468541,
+    //     "longitude": -100.5034983,
+    //     "alert": "Raining here. Roads might be wet. Drive Carefully."
+    //   },
+    //   {
+    //     "latitude": 35.107348,
+    //     "longitude": -106.6196001,
+    //     "alert": "Raining here. Roads might be wet. Drive Carefully."
+    //   },
+    //   {
+    //     "latitude": 35.3123331,
+    //     "longitude": -106.5342629,
+    //     "alert": "Raining here. Roads might be wet. Drive Carefully."
+    //   },
+    //   {
+    //     "latitude": 36.7112339,
+    //     "longitude": -107.9847264,
+    //     "alert": "Raining here. Roads might be wet. Drive Carefully."
+    //   },
+    //   {
+    //     "latitude": 37.346735,
+    //     "longitude": -108.5943604,
+    //     "alert": "Raining here. Roads might be wet. Drive Carefully."
+    //   },
+    //   {
+    //     "latitude": 37.3486331,
+    //     "longitude": -108.5858935,
+    //     "alert": "Raining here. Roads might be wet. Drive Carefully."
+    //   }
+    // ];
 
 // Now use the map as required...
     calculateRouteFromAtoB(platform);
@@ -298,30 +353,6 @@ export class NavigationComponent implements OnInit {
       console.log("this is what?");
     };
 
-    data.forEach(value => {
-      var circle = new H.map.Circle({lat: parseFloat(value.lat), lng: parseFloat(value.lon)}, 10, { style: customStyle });
-
-      map.addEventListener('drag', function(evt) {
-        openBubble(
-          {lat: parseFloat(value.lat), lng: parseFloat(value.lon)} , value.inst);
-      }, false);
-
-      map.addObject(circle);
-    });
-
-    // var circle = new H.map.Circle({lat: 52.51, lng: 13.4}, 50, { style: customStyle });
-    //
-    // map.addEventListener('drag', function(evt) {
-    //   openBubble(
-    //     {lat: 52.51, lng: 13.4} , "Instructions");
-    // }, false);
-
-    // Log 'tap' and 'mouse' events:
-    // console.log("logged "+evt.type, evt.currentPointer.type);
-
-// Add the circle to the map:
-//     map.addObject(circle);
-    // let mapEvents = new H.mapevents.MapEvents(map1);
 
 
   }

@@ -9,8 +9,8 @@ import 'rxjs/add/operator/map';
 export class ApiHelperService {
 
   constructor(private http: Http) { }
-  
-  getLatLong(url: string, address: string): Observable<{"Latitude": number, "Longitude":number}>{
+
+  getLatLong(url: string, address: string): Observable<{"Latitude": number, "Longitude":number}> {
     let header = this.getHeaders();
     let options = new RequestOptions({headers: header});
     let logLat = this.http
@@ -19,7 +19,15 @@ export class ApiHelperService {
       return logLat;
   }
 
-  getHeaders(){
+  getBadWeatherConditions(url: string, data: string): any {
+    let header = this.getHeaders();
+    let options = new RequestOptions({headers: header});
+    return this.http
+      .post(url, data, options)
+      .map(item => item.json());
+  }
+
+  getHeaders() {
     // I included these headers because otherwise FireFox
     // will request text/html instead of application/json
     let headers = new Headers();
