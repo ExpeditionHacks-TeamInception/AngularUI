@@ -7,9 +7,9 @@
 
       <nav class="nav">
           Start:
-          <input class="nav" type="text" name="startAddress">
+          <input class="nav" type="text" [(ngModel)]="startAddress" name="start">
           Enter Your Destination:
-          <input class="nav" type="text" name="endAddress">
+          <input class="nav" type="text" [(ngModel)]="endAddress" name="end">
           <button class="nav" class="btn btn-primary" (click)="navigation()"> Go To Map </button>
         <a class="nav" [routerLink]="['navigation']">DETAILS</a>
 </nav>

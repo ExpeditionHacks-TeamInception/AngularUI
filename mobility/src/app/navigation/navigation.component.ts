@@ -190,7 +190,7 @@ export class NavigationComponent implements OnInit {
      * Creates a series of H.map.Marker points from the route and adds them to the map.
      * @param {Object} route  A route as received from the H.service.RoutingService
      */
-    function addWaypointsToPanel(waypoints) {
+    var addWaypointsToPanel = function(waypoints) {
 
 
       var nodeH3 = document.createElement('h3'),
@@ -207,7 +207,9 @@ export class NavigationComponent implements OnInit {
       // routeInstructionsContainer.innerHTML = '';
       // routeInstructionsContainer.appendChild(nodeH3);
     }
-
+    var toMMSS = function(number: number) {
+      return Math.floor(number / 60) + ' minutes ' + (number % 60) + ' seconds.';
+    }
     /**
      * Creates a series of H.map.Marker points from the route and adds them to the map.
      * @param {Object} route  A route as received from the H.service.RoutingService
@@ -216,7 +218,7 @@ export class NavigationComponent implements OnInit {
       var summaryDiv = document.createElement('div'),
         content = '';
       content += '<b>Total distance</b>: ' + summary.distance + 'm. <br/>';
-      content += '<b>Travel Time</b>: ' + this.toMMSS(summary.travelTime) + ' (in current traffic)';
+      content += '<b>Travel Time</b>: ' + toMMSS(summary.travelTime) + ' (in current traffic)';
 
 
       summaryDiv.style.fontSize = 'small';
@@ -272,8 +274,6 @@ export class NavigationComponent implements OnInit {
 
   }
 
-  toMMSS(number) {
-  return Math.floor(number / 60) + ' minutes ' + (number % 60) + ' seconds.';
-}
+  
 }
 
