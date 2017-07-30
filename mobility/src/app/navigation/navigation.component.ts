@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiHelperService } from "../api-helper.service";
+import { Observable } from 'rxjs';
+import { Subject } from 'rxjs/Subject';
 declare var H: any;
 
 @Component({
@@ -9,6 +11,8 @@ declare var H: any;
 })
 export class NavigationComponent implements OnInit {
 
+
+
   points: any[];
 
   constructor(private apiHelperService: ApiHelperService) {
@@ -17,19 +21,18 @@ export class NavigationComponent implements OnInit {
   baseUrl: string = "http://localhost:5056/weather/v1/getAllAlertsOnRoute";
 
   ngOnInit() {
+  let route$ = new Subject<any>();
 
-
+    var route1: any;
     // this.points = this.apiHelperService.getSelectedPoint();
 
     // Now use the map as required...
-this.apiHelperService.getSelectedPoints()
+    this.apiHelperService.getSelectedPoints()
     .subscribe(item => {
     calculateRouteFromAtoB(platform, item);
-    var points = { waypoint0:  item[0],
-                  waypoint1:  item[1]};
 
-
-      this.apiHelperService.getBadWeatherConditions(this.baseUrl, JSON.stringify(points)).subscribe(data => {
+      route$.subscribe(route => {
+      this.apiHelperService.getBadWeatherConditions(this.baseUrl, route).subscribe(data => {
         data.forEach(value => {
           var circle = new H.map.Circle({lat: (value.latitude), lng: (value.longitude)}, 10, { style: customStyle });
           map.addEventListener('tap', function(evt) {
@@ -40,6 +43,7 @@ this.apiHelperService.getSelectedPoints()
           map.addObject(circle);
         });
       });
+    });
     });
 
 
@@ -87,8 +91,9 @@ this.apiHelperService.getSelectedPoints()
      * see: http://developer.here.com/rest-apis/documentation/routing/topics/resource-type-calculate-route.html
      */
     const onSuccess = function (result) {
-      debugger;
       let route = result.response.route[0];
+      route$.next(route);
+      route1 = route;
       /*
        * The styling of the route response on the map is entirely under the developer's control.
        * A representitive styling can be found the full JS + HTML code of this example

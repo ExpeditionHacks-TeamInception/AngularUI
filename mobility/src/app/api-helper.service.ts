@@ -34,11 +34,13 @@ export class ApiHelperService {
       return logLat;
   }
 
-  getBadWeatherConditions(url: string, data: string): any {
+  getBadWeatherConditions(url: string, data: any): any {
     let header = this.getHeaders();
     let options = new RequestOptions({headers: header});
+
+    debugger;
     return this.http
-      .post(url, data, options)
+      .post(url, JSON.stringify(data), options)
       .map(item => item.json());
   }
 
