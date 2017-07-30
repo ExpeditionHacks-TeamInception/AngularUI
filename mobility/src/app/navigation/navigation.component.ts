@@ -280,13 +280,13 @@ export class NavigationComponent implements OnInit {
 
     let data = [
       {
-      "lat":"53.5160",
+      "lat":"52.5160",
       "lon":"13.3779",
       "inst":"inst"
     },
     {
-      "lat":"67",
-      "lon":"90",
+      "lat":"52.51",
+      "lon":"13.4",
       "inst":"instr"
     }
   ];
@@ -298,22 +298,29 @@ export class NavigationComponent implements OnInit {
       console.log("this is what?");
     };
 
-    // data.forEach(value => {
-    //   new H.map.Circle({lat: 52.51, lng: 13.4}, 50, { style: customStyle });
-    // })
+    data.forEach(value => {
+      var circle = new H.map.Circle({lat: parseFloat(value.lat), lng: parseFloat(value.lon)}, 10, { style: customStyle });
 
-    var circle = new H.map.Circle({lat: 52.51, lng: 13.4}, 50, { style: customStyle });
+      map.addEventListener('drag', function(evt) {
+        openBubble(
+          {lat: parseFloat(value.lat), lng: parseFloat(value.lon)} , value.inst);
+      }, false);
 
-    map.addEventListener('drag', function(evt) {
-      openBubble(
-        {lat: 52.51, lng: 13.4} , "Instructions");
-    }, false);
+      map.addObject(circle);
+    });
+
+    // var circle = new H.map.Circle({lat: 52.51, lng: 13.4}, 50, { style: customStyle });
+    //
+    // map.addEventListener('drag', function(evt) {
+    //   openBubble(
+    //     {lat: 52.51, lng: 13.4} , "Instructions");
+    // }, false);
 
     // Log 'tap' and 'mouse' events:
     // console.log("logged "+evt.type, evt.currentPointer.type);
 
 // Add the circle to the map:
-    map.addObject(circle);
+//     map.addObject(circle);
     // let mapEvents = new H.mapevents.MapEvents(map1);
 
 
