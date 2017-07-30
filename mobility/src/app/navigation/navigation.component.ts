@@ -194,6 +194,7 @@ export class NavigationComponent implements OnInit {
     let addWaypointsToPanel = function(waypoints) {
 
 
+
       let nodeH3 = document.createElement('h3'),
         waypointLabels = [],
         i;
@@ -208,7 +209,9 @@ export class NavigationComponent implements OnInit {
       // routeInstructionsContainer.innerHTML = '';
       // routeInstructionsContainer.appendChild(nodeH3);
     }
-
+    var toMMSS = function(number: number) {
+      return Math.floor(number / 60) + ' minutes ' + (number % 60) + ' seconds.';
+    }
     /**
      * Creates a series of H.map.Marker points from the route and adds them to the map.
      * @param {Object} route  A route as received from the H.service.RoutingService
